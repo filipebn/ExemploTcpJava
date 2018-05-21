@@ -5,6 +5,7 @@ package br.ufs.dcomp.ExemploTcpJava;
 
 import java.net.*;
 import java.io.*;
+import java.util.Scanner;
 public class TCPServer{
     public static void main(String[] args){
         
@@ -19,15 +20,30 @@ public class TCPServer{
             
             InputStream is = sock.getInputStream(); //Canal de entrada de dados
             OutputStream os = sock.getOutputStream(); //Canal de saída de dados
-            byte[] buf = new byte[20]; // buffer de recepção
 
-            System.out.print("[ Aguardando recebimento de mensagem   ..............  ");
-            is.read(buf); // Operação bloqueante (aguardando chegada de dados)
-            System.out.println("[OK] ]");
+            while(true) {
+                byte[] buf = new byte[20]; // buffer de recepção
+                System.out.print("[ Aguardando recebimento de mensagem   ..............  ");
+                int size = is.read(buf); // Operação bloqueante (aguardando chegada de dados)
+                // System.out.println("  Tamanho: " + size);
+                System.out.println("[OK] ]");
+                
+                String msg = new String(buf); // Mapeando vetor de bytes recebido para String
+                
+                System.out.println("  Mensagem recebida: "+ msg);
+                
+                Scanner sc = new Scanner(System.in);
+                msg = sc.nextLine();
+                buf = new byte[20]; // buffer de recepção
+                buf = msg.getBytes(); // Obtendo a respresntação em bytes da mensagem
+                
+                
+                System.out.print("[ Enviando mensagem    ..............................  ");
+                os.write(buf);
+                System.out.println("[OK] ]");
+            }
             
-            String msg = new String(buf); // Mapeando vetor de bytes recebido para String
             
-            System.out.println("  Mensagem recebida: "+ msg);
         }catch(Exception e){System.out.println(e);}    
         System.out.println("[ FIM ]");
     }
